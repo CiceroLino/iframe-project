@@ -10,7 +10,8 @@
     "sqlite3": "^5.0.0"
   },
   "scripts": {
-    "start": "nodemon src/server.js",
+    "start": "nodemon",
+    "build": "tsc",
     "seed": "node scripts/seedDb.js"
   },
   "devDependencies": {
@@ -19,6 +20,7 @@
     "@types/node": "^22.5.0",
     "concurrently": "^8.0.1",
     "nodemon": "^2.0.22",
+    "ts-node": "^10.9.2",
     "typescript": "^5.5.4"
   },
   "engines": {
