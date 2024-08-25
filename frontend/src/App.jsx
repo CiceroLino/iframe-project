@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 
-function App() {
+export default function App() {
   const [demos, setDemos] = useState([]);
   const [selectedDemo, setSelectedDemo] = useState(null);
 
@@ -55,5 +55,3 @@ function App() {
     </div>
   );
 }
-
-export default App;
