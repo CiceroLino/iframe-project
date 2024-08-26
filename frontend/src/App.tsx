@@ -27,7 +27,7 @@ export default function App() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:3001/demos");
+        const response = await fetch("http://localhost:3001/api/demos");
         if (!response.ok) throw new Error("Failed to fetch demos");
         setDemos(await response.json());
       } catch (error) {
@@ -118,7 +118,7 @@ export default function App() {
 
     try {
       const response = await fetch(
-        `http://localhost:3001/frames/${frameToUpdate.id}`,
+        `http://localhost:3001/api/frames/${frameToUpdate.id}`,
         {
           method: "PUT",
           headers: {
