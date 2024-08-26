@@ -24,7 +24,8 @@ export default function App() {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const API_URL = import.meta.env.API_URL || "http://localhost:3001";
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
+  console.log("🚀 ~ App ~ API_URL:", API_URL);
 
   useEffect(() => {
     const fetchData = async () => {
