@@ -1,4 +1,4 @@
-const {Demo, Frame} = require('../src/model');
+const {Demo, Frame} = require('../dist/models');
 
 /* WARNING THIS WILL DROP THE CURRENT DATABASE */
 seed();
