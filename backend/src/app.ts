@@ -35,4 +35,19 @@ app.get("/frames/:id", async (req, res) => {
   }
 });
 
+app.put("/frames/:id", async (req, res) => {
+  try {
+    const frame = await Frame.findByPk(req.params.id);
+    if (frame) {
+      frame.html = req.body.html;
+      await frame.save();
+      res.status(200).json({ message: "Frame atualizado com sucesso" });
+    } else {
+      res.status(404).json({ error: "Frame não encontrado" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Erro ao atualizar o Frame" });
+  }
+});
+
 export default app;
