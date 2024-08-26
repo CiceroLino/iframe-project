@@ -2,14 +2,15 @@ import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import { sequelize, Demo, Frame } from "./models";
+const apiRouter = express.Router();
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 app.set("sequelize", sequelize);
-app.set("models", sequelize.models);
 
-app.get("/demos", async (req, res) => {
+app.set("models", sequelize.models);
+apiRouter.get("/demos", async (req, res) => {
   try {
     const demos = await Demo.findAll({
       include: [{ model: Frame, as: "frames" }],
@@ -20,7 +21,7 @@ app.get("/demos", async (req, res) => {
   }
 });
 
-app.get("/frames/:id", async (req, res) => {
+apiRouter.get("/frames/:id", async (req, res) => {
   try {
     const frame = await Frame.findByPk(req.params.id, {
       include: [{ model: Demo, as: "demo" }],
@@ -35,7 +36,7 @@ app.get("/frames/:id", async (req, res) => {
   }
 });
 
-app.put("/frames/:id", async (req, res) => {
+apiRouter.put("/frames/:id", async (req, res) => {
   try {
     const frame = await Frame.findByPk(req.params.id);
     if (frame) {
@@ -49,5 +50,7 @@ app.put("/frames/:id", async (req, res) => {
     res.status(500).json({ error: "Erro ao atualizar o Frame" });
   }
 });
+
+app.use("/api", apiRouter);
 
 export default app;
