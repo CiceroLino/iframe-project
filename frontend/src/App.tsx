@@ -24,10 +24,12 @@ export default function App() {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  const API_URL = import.meta.env.API_URL || "http://localhost:3001";
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("/api/demos");
+        const response = await fetch(`${API_URL}/api/demos`);
         if (!response.ok) throw new Error("Failed to fetch demos");
         setDemos(await response.json());
       } catch (error) {
@@ -118,7 +120,7 @@ export default function App() {
 
     try {
       const response = await fetch(
-        `/api/frames/${frameToUpdate.id}`,
+        `${API_URL}/api/frames/${frameToUpdate.id}`,
         {
           method: "PUT",
           headers: {
