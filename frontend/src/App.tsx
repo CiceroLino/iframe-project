@@ -1,16 +1,28 @@
 import { useEffect, useState, useRef } from "react";
 import "./App.css";
 
+interface Demo {
+  id: number;
+  name: string;
+  frames: Frame[];
+}
+
+interface Frame {
+  id: number;
+  order: number;
+  html: string;
+}
+
 export default function App() {
-  const [demos, setDemos] = useState([]);
-  const [selectedDemo, setSelectedDemo] = useState(null);
-  const [selectedFrameIndex, setSelectedFrameIndex] = useState(0);
-  const [editableContent, setEditableContent] = useState("");
-  const [isSaving, setIsSaving] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [selectedElement, setSelectedElement] = useState(null);
-  const iframeRef = useRef(null);
-  const textareaRef = useRef(null);
+  const [demos, setDemos] = useState<Demo[]>([]);
+  const [selectedDemo, setSelectedDemo] = useState<Demo | null>(null);
+  const [selectedFrameIndex, setSelectedFrameIndex] = useState<number>(0);
+  const [editableContent, setEditableContent] = useState<string>("");
+  const [isSaving, setIsSaving] = useState<boolean>(false);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [selectedElement, setSelectedElement] = useState<HTMLElement | null>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,9 +44,11 @@ export default function App() {
       if (iframeRef.current) {
         const iframeDoc =
           iframeRef.current.contentDocument ||
-          iframeRef.current.contentWindow.document;
-        iframeDoc.body.innerHTML = editableContent;
-        iframeDoc.body.addEventListener("dblclick", handleIframeDoubleClick);
+          iframeRef.current.contentWindow?.document;
+        if (iframeDoc) {
+          iframeDoc.body.innerHTML = editableContent;
+          iframeDoc.body.addEventListener("dblclick", handleIframeDoubleClick);
+        }
       }
     };
 
@@ -45,13 +59,15 @@ export default function App() {
       if (iframeRef.current) {
         const iframeDoc =
           iframeRef.current.contentDocument ||
-          iframeRef.current.contentWindow.document;
-        iframeDoc.body.removeEventListener("dblclick", handleIframeDoubleClick);
+          iframeRef.current.contentWindow?.document;
+        if (iframeDoc) {
+          iframeDoc.body.removeEventListener("dblclick", handleIframeDoubleClick);
+        }
       }
     };
   }, [selectedFrameIndex, editableContent]);
 
-  const handleSelectDemo = (demo) => {
+  const handleSelectDemo = (demo: Demo) => {
     const sortedDemo = {
       ...demo,
       frames: [...demo.frames].sort((a, b) => a.order - b.order),
@@ -61,15 +77,15 @@ export default function App() {
     setEditableContent(sortedDemo.frames[0]?.html || "");
   };
 
-  const handleFrameChange = (index) => {
+  const handleFrameChange = (index: number) => {
     setSelectedFrameIndex(index);
-    setEditableContent(selectedDemo.frames[index].html);
+    setEditableContent(selectedDemo!.frames[index].html);
     setIsEditing(false);
   };
 
-  const handleIframeDoubleClick = (event) => {
+  const handleIframeDoubleClick = (event: MouseEvent) => {
     event.preventDefault();
-    const element = event.target;
+    const element = event.target as HTMLElement;
     setSelectedElement(element);
     setIsEditing(true);
     const elementHtml = element.outerHTML;
@@ -83,17 +99,21 @@ export default function App() {
       const newHtml = textareaRef.current.value;
       const tempDiv = document.createElement("div");
       tempDiv.innerHTML = newHtml;
-      const newElement = tempDiv.firstChild;
-      selectedElement.parentNode.replaceChild(newElement, selectedElement);
+      const newElement = tempDiv.firstChild as HTMLElement;
+      if (selectedElement.parentNode) {
+        selectedElement.parentNode.replaceChild(newElement, selectedElement);
+      }
       setSelectedElement(null);
       setIsEditing(false);
-      setEditableContent(iframeRef.current.contentDocument.body.innerHTML);
+      if (iframeRef.current?.contentDocument) {
+        setEditableContent(iframeRef.current.contentDocument.body.innerHTML);
+      }
     }
   };
 
   const handleSaveChanges = async () => {
     setIsSaving(true);
-    const frameToUpdate = selectedDemo.frames[selectedFrameIndex];
+    const frameToUpdate = selectedDemo!.frames[selectedFrameIndex];
     frameToUpdate.html = editableContent;
 
     try {
