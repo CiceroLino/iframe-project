@@ -3,3 +3,5 @@ node_modules
 database.sqlite3
 .env
 dist
+combined.log
+error.log
