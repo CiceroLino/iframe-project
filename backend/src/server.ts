@@ -7,6 +7,10 @@ dotenv.config();
 
 const PORT = process.env.PORT || 3001;
 
+import express from "express";
+const apiRouter = express.Router();
+app.use("/api", apiRouter);
+
 async function init() {
   try {
     await testConnection();
@@ -22,3 +26,5 @@ async function init() {
 }
 
 init();
+
+export default apiRouter;
